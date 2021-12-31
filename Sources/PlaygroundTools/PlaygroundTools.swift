@@ -35,11 +35,6 @@ extension PlaygroundTools {
         var outputPath: Path
 
         func validate() throws {
-            // TEMP for deugging
-            if outputPath.exists {
-                try outputPath.delete()
-            }
-
             if !appPath.exists || !appPath.isDirectory {
                 throw ValidationError(errorDescription: "A .swiftpm bundle does not exist at the given path.")
             }
