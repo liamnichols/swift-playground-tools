@@ -37,7 +37,7 @@ public struct XcodeProject {
 
         // TODO: Create a better bundle identifier.
         // TODO: I think this needs to be read from somewhere also?
-        let bundleIdentifier = "com.playground-tools.generated.\(targetName.replacingOccurrences(of: " ", with: "-"))"
+        let bundleIdentifier = app.package.bundleIdentifier ?? "com.playground-tools.generated.\(targetName.replacingOccurrences(of: " ", with: "-"))"
 
         // Create the target path if it doesn't exist
         if !targetPath.exists {
@@ -78,6 +78,7 @@ public struct XcodeProject {
                             "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": app.package.accentColorAssetName,
                             "CODE_SIGN_STYLE": "Automatic",
                             "CURRENT_PROJECT_VERSION": app.package.bundleVersion,
+                            "DEVELOPMENT_TEAM": app.package.teamIdentifier,
                             "ENABLE_PREVIEWS": "YES",
                             "GENERATE_INFOPLIST_FILE": "YES",
                             "INFOPLIST_KEY_UIApplicationSceneManifest_Generation": "YES",
@@ -91,7 +92,7 @@ public struct XcodeProject {
                             "SWIFT_EMIT_LOC_STRINGS": "YES",
                             "SWIFT_VERSION": "5.0",
                             "TARGETED_DEVICE_FAMILY": "1,2",
-                        ],
+                        ].compactMapValues({ $0 }),
                         configSettings: [:],
                         groups: []
                     ),

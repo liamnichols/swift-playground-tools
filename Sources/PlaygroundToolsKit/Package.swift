@@ -30,6 +30,8 @@ public struct Package {
     }
 
     public let name: String
+    public let bundleIdentifier: String?
+    public let teamIdentifier: String?
     public let deploymentTarget: String
     public let displayVersion: String
     public let bundleVersion: String
@@ -52,14 +54,16 @@ public extension Package {
         //
         // 2. iOSApplication details
         //   - name
+        //   - bundleIdentifier (optional)
+        //   - teamIdentifier (optional)
         //   - displayVersion
         //   - bundleVersion
         //   - iconAssetName
         //   - accentColorAssetName
-        //   - supportedDeviceFamilies
-        //   - supportedInterfaceOrientations
-        //   - capabilities
-        //   - additionalInfoPlistContentFilePath
+        //   - supportedDeviceFamilies (not used in UI currently)
+        //   - supportedInterfaceOrientations (not used in UI currently)
+        //   - capabilities (optional)
+        //   - additionalInfoPlistContentFilePath (not used in UI currently)
         //
         // 3. Dependencies
         //   - If used, also we need to copy Package.resolved

@@ -29,6 +29,12 @@ enum HackyV4PackageLoader: PackageLoader {
             throw StringError("Unable to find package name in package.")
         }
 
+        // bundleIdentifier: "(.*)"
+        let bundleIdentifier: String? = try firstMatch(of: #"bundleIdentifier: "(.*)""#, group: 1, in: packageContents)
+
+        // teamIdentifier: "(.*)"
+        let teamIdentifier: String? = try firstMatch(of: #"teamIdentifier: "(.*)""#, group: 1, in: packageContents)
+
         // displayVersion: "(.*)"
         guard let displayVersion = try firstMatch(of: #"displayVersion: "(.*)""#, group: 1, in: packageContents) else {
             throw StringError("Unable to find display version in package.")
@@ -51,6 +57,8 @@ enum HackyV4PackageLoader: PackageLoader {
 
         return Package(
             name: name,
+            bundleIdentifier: bundleIdentifier,
+            teamIdentifier: teamIdentifier,
             deploymentTarget: deploymentTarget,
             displayVersion: displayVersion,
             bundleVersion: bundleVersion,
