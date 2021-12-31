@@ -1,13 +1,39 @@
 import Foundation
 import PathKit
 
+// TODO: This data model should really reflect targets as well...
 public struct Package {
+    public struct Dependency {
+        public enum VersionRequirement {
+            case exact(String)
+            case range(from: String, to: String)
+        }
+
+        /// The identity of the package
+        public let identity: String
+
+        /// The URL for the remote package source
+        public let url: URL
+
+        /// The defined version requirements
+        public let versionRequirement: VersionRequirement
+
+        /// The products of the given dependency that are required by the app target
+        public let products: [String]
+    }
+
+    public struct TargetDependency {
+        public let package: String
+        public let product: String
+    }
+
     public let name: String
     public let deploymentTarget: String
     public let displayVersion: String
     public let bundleVersion: String
     public let iconAssetName: String
     public let accentColorAssetName: String
+    public let dependencies: [Dependency]
 }
 
 protocol PackageLoader {

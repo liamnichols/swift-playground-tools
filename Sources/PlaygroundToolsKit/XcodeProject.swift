@@ -113,7 +113,7 @@ public struct XcodeProject {
                             resourceTags: []
                         )
                     ],
-                    dependencies: [],
+                    dependencies: app.package.xcodeGenDependencies,
                     info: nil, // We manage the Info.plist manually
                     entitlements: nil, // TODO: Populate from Capabilities.
                     transitivelyLinkDependencies: nil,
@@ -133,7 +133,7 @@ public struct XcodeProject {
             settings: .empty,
             settingGroups: [:],
             schemes: [],
-            packages: [:], // TODO: Figure this out
+            packages: app.package.xcodeGenPackages,
             options: SpecOptions(),
             fileGroups: [],
             configFiles: [:],
@@ -145,5 +145,66 @@ public struct XcodeProject {
         let xcodeProjGenerator = ProjectGenerator(project: project)
         let xcodeProj = try xcodeProjGenerator.generateXcodeProject(in: path)
         try xcodeProj.write(path: xcodeProjPath, override: false)
+
+        // Copy Package.resolved if there were dependencies...
+        // Project.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+        let packagePins = app.path + "Package.resolved"
+        if packagePins.exists {
+            let swiftpmSupportDir = xcodeProjPath + "project.xcworkspace/xcshareddata/swiftpm/"
+            if !swiftpmSupportDir.exists {
+                try swiftpmSupportDir.mkpath()
+            }
+            try packagePins.copy(swiftpmSupportDir + "Package.resolved")
+        }
+    }
+}
+
+private extension Package.Dependency.VersionRequirement {
+    var toXcodeGen: ProjectSpec.SwiftPackage.VersionRequirement {
+        switch self {
+        case .exact(let version):
+            return .exact(version)
+        case .range(let from, let to):
+            return .range(from: from, to: to)
+        }
+    }
+}
+
+private extension Package {
+    var xcodeGenPackages: [String: SwiftPackage] {
+        Dictionary(uniqueKeysWithValues: dependencies.map { dependency in
+            (
+                key: dependency.identity,
+                value: .remote(
+                    url: dependency.url.absoluteString,
+                    versionRequirement: dependency.versionRequirement.toXcodeGen
+                )
+            )
+        })
+    }
+
+    var xcodeGenDependencies: [ProjectSpec.Dependency] {
+        var values: [ProjectSpec.Dependency] = []
+
+        for dependency in dependencies {
+            for product in dependency.products {
+                values.append(
+                    ProjectSpec.Dependency(
+                        type: .package(product: product),
+                        reference: dependency.identity,
+                        embed: nil,
+                        codeSign: nil,
+                        link: nil,
+                        implicit: false,
+                        weakLink: false,
+                        platformFilter: .all,
+                        platforms: nil,
+                        copyPhase: nil
+                    )
+                )
+            }
+        }
+
+        return values
     }
 }
