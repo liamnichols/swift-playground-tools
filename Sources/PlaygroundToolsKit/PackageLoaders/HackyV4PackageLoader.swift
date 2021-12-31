@@ -21,32 +21,32 @@ enum HackyV4PackageLoader: PackageLoader {
 
         // .iOS("15.2")
         guard let deploymentTarget = try firstMatch(of: #".iOS\("([0-9.]*)"\)"#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find deployment target in package.")
+            throw StringError("Unable to find deployment target in package.")
         }
 
         // name: "(.*)"
         guard let name = try firstMatch(of: #"name: "(.*)""#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find package name in package.")
+            throw StringError("Unable to find package name in package.")
         }
 
         // displayVersion: "(.*)"
         guard let displayVersion = try firstMatch(of: #"displayVersion: "(.*)""#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find display version in package.")
+            throw StringError("Unable to find display version in package.")
         }
 
         // bundleVersion: "(.*)"
         guard let bundleVersion = try firstMatch(of: #"bundleVersion: "(.*)""#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find bundle version in package.")
+            throw StringError("Unable to find bundle version in package.")
         }
 
         // iconAssetName: "(.*)"
         guard let iconAssetName = try firstMatch(of: #"iconAssetName: "(.*)""#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find icon asset name in package.")
+            throw StringError("Unable to find icon asset name in package.")
         }
 
         // accentColorAssetName: "(.*)"
         guard let accentColorAssetName = try firstMatch(of: #"accentColorAssetName: "(.*)""#, group: 1, in: packageContents) else {
-            throw LoadError(errorDescription: "Unable to find acceent color asset name in package.")
+            throw StringError("Unable to find acceent color asset name in package.")
         }
 
         return Package(
@@ -83,7 +83,7 @@ enum HackyV4PackageLoader: PackageLoader {
             //
             // We need to know this to figure out which target dependencies relate to which remote package.
             guard let url = URL(string: url), let identity = url.pathComponents.last?.lowercased() else {
-                throw LoadError(errorDescription: "\(url) is not a valid URL")
+                throw StringError("\(url) is not a valid URL")
             }
 
             return Package.Dependency(
@@ -114,7 +114,7 @@ enum HackyV4PackageLoader: PackageLoader {
             return .revision(revision)
         }
 
-        throw LoadError(errorDescription: "Unknown package version requirement '\(string)'")
+        throw StringError("Unknown package version requirement '\(string)'")
     }
 
     private static func firstMatch(of pattern: String, group: Int = 0, in string: String) throws -> String? {
@@ -124,7 +124,7 @@ enum HackyV4PackageLoader: PackageLoader {
         guard let match = regex.firstMatch(in: string, options: [], range: entireRange) else { return nil }
 
         let range = match.range(at: group)
-        guard let stringRange = Range(range, in: string) else { throw LoadError(errorDescription: "Range detection failed") }
+        guard let stringRange = Range(range, in: string) else { throw StringError("Range detection failed") }
         return String(string[stringRange])
     }
 
@@ -138,7 +138,7 @@ enum HackyV4PackageLoader: PackageLoader {
             var strings: [String] = []
             for idx in 0 ..< match.numberOfRanges {
                 let range = match.range(at: idx)
-                guard let stringRange = Range(range, in: string) else { throw LoadError(errorDescription: "Range detection failed") }
+                guard let stringRange = Range(range, in: string) else { throw StringError("Range detection failed") }
                 strings.append(String(string[stringRange]))
             }
             return strings

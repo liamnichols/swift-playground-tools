@@ -36,11 +36,11 @@ extension PlaygroundTools {
 
         func validate() throws {
             if !appPath.exists || !appPath.isDirectory {
-                throw ValidationError(errorDescription: "A .swiftpm bundle does not exist at the given path.")
+                throw StringError("A .swiftpm bundle does not exist at the given path.")
             }
 
             if outputPath.exists {
-                throw ValidationError(errorDescription: "A file or directory already exists at the specified output location.")
+                throw StringError("A file or directory already exists at the specified output location.")
             }
         }
 

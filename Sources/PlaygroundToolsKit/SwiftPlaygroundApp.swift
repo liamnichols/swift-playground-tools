@@ -23,7 +23,7 @@ public struct SwiftPlaygroundApp {
 
     static func findAssetCatalog(in bundleLocation: Path) throws -> Path {
         guard let path = bundleLocation.glob("*.xcassets").first else {
-            throw LoadError(errorDescription: "Unable to find Asset Catalog")
+            throw StringError("Unable to find Asset Catalog")
         }
 
         return path
