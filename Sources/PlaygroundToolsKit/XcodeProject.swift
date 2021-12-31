@@ -14,7 +14,7 @@ public struct XcodeProject {
 
     public func generate(from app: SwiftPlaygroundApp) throws {
         guard !path.exists else {
-            throw GeneratorError(errorDescription: "A project already exists in the output directory")
+            throw StringError("A project already exists in the output directory")
         }
 
         // Resolve some base values
