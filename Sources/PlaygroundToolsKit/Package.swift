@@ -24,11 +24,6 @@ public struct Package {
         public let products: [String]
     }
 
-    public struct TargetDependency {
-        public let package: String
-        public let product: String
-    }
-
     public let name: String
     public let bundleIdentifier: String?
     public let teamIdentifier: String?
