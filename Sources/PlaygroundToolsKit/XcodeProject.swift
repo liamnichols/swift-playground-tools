@@ -166,6 +166,10 @@ private extension Package.Dependency.VersionRequirement {
             return .exact(version)
         case .range(let from, let to):
             return .range(from: from, to: to)
+        case .branch(let branch):
+            return .branch(branch)
+        case .revision(let revision):
+            return .revision(revision)
         }
     }
 }

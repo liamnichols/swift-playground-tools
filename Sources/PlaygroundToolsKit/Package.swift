@@ -7,6 +7,8 @@ public struct Package {
         public enum VersionRequirement {
             case exact(String)
             case range(from: String, to: String)
+            case branch(String)
+            case revision(String)
         }
 
         /// The identity of the package

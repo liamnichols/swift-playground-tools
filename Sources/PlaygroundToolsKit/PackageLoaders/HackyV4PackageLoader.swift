@@ -106,6 +106,14 @@ enum HackyV4PackageLoader: PackageLoader {
             return .range(from: range[1], to: range[2])
         }
 
+        if let branch = try firstMatch(of: #".branch\("(.*)"\)"#, group: 1, in: string) {
+            return .branch(branch)
+        }
+
+        if let revision = try firstMatch(of: #".revision\("(.*)"\)"#, group: 1, in: string) {
+            return .revision(revision)
+        }
+
         throw LoadError(errorDescription: "Unknown package version requirement '\(string)'")
     }
 
